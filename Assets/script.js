@@ -1,7 +1,7 @@
 // var todayIs = moment().format('MMMM Do YYYY, h:mm:ss a');
 //     $("#currentDate").html(todayIs);
 
-    let apiKey = "3ac0d8db34de82819d13a9167239acc1";
+    let apiKey = "02456264f52783c4ea50afb422581573";
     let searchBtn = $(".searchBtn");
     let searchInput = $(".searchInput");
 
