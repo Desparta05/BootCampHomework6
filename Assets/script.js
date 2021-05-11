@@ -1,3 +1,5 @@
+//Got assistance from Youtube video: https://www.youtube.com/watch?v=GXrDEA3SIOQ
+
 // Set constant variables
 const searchBtn = $(`#searchBtn`);
 // const clearBtn = $(`#clearBtn`);
@@ -14,7 +16,24 @@ var fiveDayInfo = [];
 // Get local storage on page refresh/load
 getStoredInfo();
 
-// ------------------- Functions -------------------
+
+// Functionality when search form is submitted, or search button is clicked
+searchForm.submit(function (event) {
+    event.preventDefault();
+    var city = searchVal.val();
+    var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherAPIKey}`;
+    ajaxCall(weatherURL, city);
+})
+
+// Functionality when dynamically added buttons (search history items) are clicked
+$(document).on(`click`, `.searchItem`, function () {
+    var city = $(this).text();
+    $(`#city`).text(`City Name: ${city}`);
+    var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherAPIKey}`;
+    ajaxCall(weatherURL, city);
+})
+
+
 
 function getStoredInfo() {
     // Obtain locally stored info for search history, current weather information, and forecasted weather information
@@ -36,12 +55,12 @@ function getStoredInfo() {
         $(`.forecastSection`).removeClass(`d-none`);
     }
 
-    // Rendor items obtained from local storage
+    // Shows items obtained from local storage
     rendorStoredInfo();
 }
 
 function rendorStoredInfo() {
-    // Rendor stored search History as buttons
+    // Display stored search History as buttons
     for (i = 0; i < searchItems.length; i++) {
         var btn = $(`<button>`);
         btn.attr(`class`, `searchItem btn btn-info mx-0 my-0`).text(searchItems[i]);
@@ -49,13 +68,13 @@ function rendorStoredInfo() {
     }
 
     // Variables below are obtained from function ajaxCall, which uses the data retrieved from servers to create these variables.
-    // Rendor current city weather information
+    // Shows current city weather information
     if (currentCityInfo[0]) {
         $(`#city`).text(`City Name: ${currentCityInfo[0]}`);
     } else {
         $(`#city`).text(`City Name: Pick a City!`);
     }
-    $(`#currentWeatherHeader`).text(`The Current Weather! Today is ${currentCityInfo[1]}`)
+    $(`#currentWeatherHeader`).text(`Today is ${currentCityInfo[1]}`)
     $(`#currentIcon`).attr(`src`, `https://openweathermap.org/img/wn/${currentCityInfo[2]}@2x.png`);
     $(`#currentWeatherType`).text(`Weather Type: ${currentCityInfo[3]}`);
     $(`#currentUviText`).text(`UV Index:`);
@@ -67,7 +86,7 @@ function rendorStoredInfo() {
     $(`#currentHumidity`).text(`Humidity: ${currentCityInfo[7]}%`);
     $(`#currentWindSpeed`).text(`Windspeed: ${currentCityInfo[8]}mph`);
 
-    // Rendor forecasted weather information
+    // Forecasted weather information
     let dayIterator = 1;
     for (i = 0; i < fiveDayInfo.length; i++) {
         $(`#date${dayIterator}`).text(`${fiveDayInfo[i].date}`);
@@ -219,28 +238,5 @@ function ajaxCall(apiUrl, city) {
 
 }
 
-// ------------------- Event Listeners using above functions -------------------
 
-// Functionality when search form is submitted, or search button is clicked
-searchForm.submit(function (event) {
-    event.preventDefault();
-    var city = searchVal.val();
-    var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherAPIKey}`;
-    ajaxCall(weatherURL, city);
-})
 
-// Functionality when dynamically added buttons (search history items) are clicked
-$(document).on(`click`, `.searchItem`, function () {
-    var city = $(this).text();
-    $(`#city`).text(`City Name: ${city}`);
-    var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherAPIKey}`;
-    ajaxCall(weatherURL, city);
-})
-
-// Functionality when the clear button is clicked.
-// clearBtn.click(function () {
-//     $(`.searchItem`).remove()
-//     localStorage.removeItem(`Search Items`);
-//     localStorage.removeItem(`Current City Info`);
-//     localStorage.removeItem(`Five Day Info`);
-// })
